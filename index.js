@@ -15,6 +15,8 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 
 async function run() {
     const categoriesCollection = client.db('bikes4u').collection('categories');
+    const bikeOrdersCollection = client.db('bikes4u').collection('bikeOrders');
+    const usersCollection = client.db('bikes4u').collection('users');
 
     try {
         // get all categories from database - 
@@ -29,6 +31,28 @@ async function run() {
             const id = req.params.id
             const query = { _id: ObjectId(id) }
             const result = await categoriesCollection.findOne(query)
+            res.send(result)
+        })
+
+        // post modal data(bike-orders) in database - 
+        app.post('/bikeorders', async (req, res) => {
+            const bikeOrder = req.body
+            const result = await bikeOrdersCollection.insertOne(bikeOrder)
+            res.send(result)
+        })
+
+        // get modal data(bike-orders) from database - 
+        app.get('/bikeorders', async (req, res) => {
+            const email = req.query.email
+            const query = { email: email }
+            const bikeOrders = await bikeOrdersCollection.find(query).toArray()
+            res.send(bikeOrders)
+        })
+
+        // post users to the database - 
+        app.post('/users', async (req, res) => {
+            const user = req.body
+            const result = await usersCollection.insertOne(user)
             res.send(result)
         })
     }
