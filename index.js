@@ -101,6 +101,14 @@ async function run() {
             res.send(users)
         })
 
+        // delete users from daabase - 
+        app.delete('/users/:id', async (req, res) => {
+            const id = req.params.id
+            const filter = { _id: ObjectId(id) }
+            const result = await usersCollection.deleteOne(filter)
+            res.send(result)
+        })
+
         // check admin by users email - 
         app.get('/users/admin/:email', async (req, res) => {
             const email = req.params.email
@@ -129,6 +137,22 @@ async function run() {
         app.post('/addedbikes', async (req, res) => {
             const addedbikes = req.body
             const result = await addedBikeCollection.insertOne(addedbikes)
+            res.send(result)
+        })
+
+        // get addedbikes by seller email - 
+        app.get('/addedbikes', async (req, res) => {
+            const email = req.query.email
+            const query = { sellerEmail: email }
+            const bikes = await addedBikeCollection.find(query).toArray()
+            res.send(bikes)
+        })
+
+        // delete addedbikes from daabase - 
+        app.delete('/addedbikes/:id', async (req, res) => {
+            const id = req.params.id
+            const filter = { _id: ObjectId(id) }
+            const result = await addedBikeCollection.deleteOne(filter)
             res.send(result)
         })
 
