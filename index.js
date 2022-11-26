@@ -102,7 +102,7 @@ async function run() {
         })
 
         // delete users from daabase - 
-        app.delete('/users/:id', async (req, res) => {
+        app.delete('/users/:id', verifyJWT, async (req, res) => {
             const id = req.params.id
             const filter = { _id: ObjectId(id) }
             const result = await usersCollection.deleteOne(filter)
@@ -134,26 +134,47 @@ async function run() {
         })
 
         // post addedbikes in database -
-        app.post('/addedbikes', async (req, res) => {
+        app.post('/addedbikes', verifyJWT, async (req, res) => {
             const addedbikes = req.body
             const result = await addedBikeCollection.insertOne(addedbikes)
             res.send(result)
         })
 
         // get addedbikes by seller email - 
-        app.get('/addedbikes', async (req, res) => {
+        app.get('/addedbikes', verifyJWT, async (req, res) => {
             const email = req.query.email
             const query = { sellerEmail: email }
             const bikes = await addedBikeCollection.find(query).toArray()
             res.send(bikes)
         })
 
-        // delete addedbikes from daabase - 
-        app.delete('/addedbikes/:id', async (req, res) => {
+        // get all addedbikes from database - 
+        app.get('/addedbikesss', async (req, res) => {
+            const query = {}
+            const bikes = await addedBikeCollection.find(query).toArray()
+            res.send(bikes)
+        })
+
+        // delete addedbikes from database - 
+        app.delete('/addedbikes/:id', verifyJWT, async (req, res) => {
             const id = req.params.id
             const filter = { _id: ObjectId(id) }
             const result = await addedBikeCollection.deleteOne(filter)
             res.send(result)
+        })
+
+        // update (select products for advertise) - 
+        app.put('/addedbikes/:id', verifyJWT, async (req, res) => {
+            const id = req.params.id
+            const filter = { _id: ObjectId(id) }
+            const options = { upsert: true }
+            const updateDoc = {
+                $set: {
+                    isAdvertise: 'advertise'
+                }
+            }
+            const result = await addedBikeCollection.updateOne(filter, updateDoc, options)
+            res.send(result);
         })
 
     }
