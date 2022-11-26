@@ -35,6 +35,7 @@ async function run() {
     const categoriesCollection = client.db('bikes4u').collection('categories');
     const bikeOrdersCollection = client.db('bikes4u').collection('bikeOrders');
     const usersCollection = client.db('bikes4u').collection('users');
+    const addedBikeCollection = client.db('bikes4u').collection('addedBikes');
 
     try {
         // get all categories from database - 
@@ -106,6 +107,29 @@ async function run() {
             const query = { email }
             const user = await usersCollection.findOne(query)
             res.send({ isAdmin: user?.role === 'admin' })
+        })
+
+        // check buyer by users email - 
+        app.get('/users/buyer/:email', async (req, res) => {
+            const email = req.params.email
+            const query = { email }
+            const user = await usersCollection.findOne(query)
+            res.send({ isBuyer: user?.accountType === 'Buyer' })
+        })
+
+        // check seller by users email -
+        app.get('/users/seller/:email', async (req, res) => {
+            const email = req.params.email
+            const query = { email }
+            const user = await usersCollection.findOne(query)
+            res.send({ isSeller: user?.accountType === 'Seller' })
+        })
+
+        // post addedbikes in database -
+        app.post('/addedbikes', async (req, res) => {
+            const addedbikes = req.body
+            const result = await addedBikeCollection.insertOne(addedbikes)
+            res.send(result)
         })
 
     }
