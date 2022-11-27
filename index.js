@@ -90,7 +90,7 @@ async function run() {
         })
 
         // Posting payment data to database and updating data in bikeOrdersCollection - 
-        app.post('/payments', async (req, res) => {
+        app.post('/payments', verifyJWT, async (req, res) => {
             const payment = req.body
             const result = await paymentsCollection.insertOne(payment)
 
