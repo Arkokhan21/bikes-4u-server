@@ -122,6 +122,13 @@ async function run() {
             res.send(bikeOrders)
         })
 
+        // get all modal data(bike-orders) from database -
+        app.get('/bikeordersss', async (req, res) => {
+            const query = {}
+            const bikeOrders = await bikeOrdersCollection.find(query).toArray()
+            res.send(bikeOrders)
+        })
+
         // post users to the database - 
         app.post('/users', async (req, res) => {
             const user = req.body
@@ -223,7 +230,6 @@ async function run() {
             const result = await addedBikeCollection.updateOne(filter, updateDoc, options)
             res.send(result);
         })
-
     }
     finally {
 
